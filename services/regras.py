@@ -10,9 +10,31 @@ def menu_opcoes():
   print("5 - Sair do menu de tarefas")
 
 def adicionar_tarefas(): # CREATE  
-  tarefa = input("Digite a tarefa: ")
-  novas_tarefas.append(tarefa)
   
+  while True:
+    tarefa = input("Digite a tarefa: ").strip()
+    
+    if not tarefa:
+      # Verifica se o input não está vazio
+      print("Tarefa Vazia! Digite novamente..")
+      
+    
+    elif tarefa.replace(" ", "").isdigit():
+      # Verifica se não possui numeros digitados no input
+      print("Não é permitido  apenas numeros !")
+      
+    
+    elif len(tarefa) < 5:
+      # Verifica se a tarefa possui pelo menos 5 caracteres
+      
+      print("Deve ter pelo 5 caracteres !")
+      print("Digite novamente..")
+
+    else:
+      print(f"Tarefa: {tarefa} -  adicionada com sucesso!")
+      novas_tarefas.append(tarefa)
+      break
+
 def visualizar_tarefa(): # READ
   
   for tarefa in novas_tarefas:
