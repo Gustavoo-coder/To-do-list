@@ -5,35 +5,29 @@
 # from services.regras import atualizar_tarefa
 # from services.regras import deletar_tarefa
 
-
-from backend.services.regras import(
-  menu_opcoes,
-  adicionar_tarefas,
-  visualizar_tarefa,
-  atualizar_tarefa,
-  deletar_tarefa
+from backend.services.crud import(
+  gerenciador_tarefas_crud
 )
-
 # Fluxo crud do to-do-list
 while True:
   
-  menu_opcoes()
+  gerenciador_tarefas_crud.menu_opcoes()
   
   escolha_opcoes_crud = input("Escolha a opção: ")
   
   match escolha_opcoes_crud:
     
     case "1":
-      adicionar_tarefas()
+     gerenciador_tarefas_crud.adicionar_tarefas()
       
     case "2":
-      visualizar_tarefa()
+      gerenciador_tarefas_crud.visualizar_tarefa()
       
     case "3":
-      atualizar_tarefa()
+      gerenciador_tarefas_crud.atualizar_tarefa()
     
     case "4":
-      deletar_tarefa()
+      gerenciador_tarefas_crud.deletar_tarefa()
     
     case "5":
       print("Saindo do menu de tarefas...")
