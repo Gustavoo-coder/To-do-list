@@ -16,26 +16,26 @@ class Gerenciador_Tarefas():
 
   def adicionar_tarefas(self): # CREATE  
     
-    while True:
       nome_tarefa = input("Digite a nova tarefa: ").strip()
       descricao_tarefa = input("Descrição da tarefa: ").strip()
       status_tarefa = input("Status da tarefa: ").strip()
       
-      if not self.novas_tarefas:
-        print("Nenhuma tarefa cadastrada")
-      else:
-        tarefa = Tarefa(self.id_tarefa,nome_tarefa,descricao_tarefa,status_tarefa)
-        print(f"Tarefa: {tarefa.nome_tarefa} -  adicionada com sucesso!")
-        self.novas_tarefas.append(tarefa)
-        self.id_tarefa += 1
-        break
-
+    
+      tarefa = Tarefa(self.id_tarefa,nome_tarefa,
+                      descricao_tarefa,
+                      status_tarefa)
+      
+      print(f"Tarefa: {tarefa.nome_tarefa} -  adicionada com sucesso!")
+      self.novas_tarefas.append(tarefa)
+      self.id_tarefa += 1
+      
+      
   def visualizar_tarefa(self): # READ
     
     for tarefa in self.novas_tarefas:
       print(tarefa)
-
-
+      
+      
   def atualizar_tarefa(self): # UPTDATE
 
     print("\nTarefas atuais:")
@@ -61,7 +61,6 @@ class Gerenciador_Tarefas():
     else:
       print("Indice invalido!")
       
-
 
   def deletar_tarefa(self): # DELETE
     print("\nTarefas atuais:")
