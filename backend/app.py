@@ -1,11 +1,4 @@
-#importar função externa
-# from services.regras import menu_opcoes
-# from services.regras import adicionar_tarefas
-# from services.regras import visualizar_tarefa
-# from services.regras import atualizar_tarefa
-# from services.regras import deletar_tarefa
-
-from backend.services.crud import gerenciador_tarefas_crud
+from services.crud import gerenciador_tarefas_crud
 
 # Fluxo crud do to-do-list
 while True:

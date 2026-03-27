@@ -1,7 +1,7 @@
 # Logica principal do negeocio (CRUD)
-from backend.services.tarefa import Tarefa
+from services.tarefa import Tarefa
 
-class Gerenciador_Tarefas():
+class GerenciadorTarefas():
   def __init__(self):
     self.novas_tarefas = []
     self.id_tarefa = 1
@@ -31,46 +31,67 @@ class Gerenciador_Tarefas():
       
       
   def visualizar_tarefa(self): # READ
+      
+    if not self.novas_tarefas:
+      print("Nenhuma tarefa disponivel !")
+      return
     
     for tarefa in self.novas_tarefas:
       print(tarefa)
-      
-      
+  
   def atualizar_tarefa(self): # UPTDATE
+          
+          if not self.novas_tarefas:
+            print("Nenhuma tarefa disponivel!")
+            return
 
-    print("\nTarefas atuais:")
-
-    for i, tarefa in enumerate(self.novas_tarefas):
-      print(
-        f"Tarefa: [{i}] - {tarefa.nome_tarefa} | Descrição: {tarefa.descricao} | Status: {tarefa.status}"
-      )
-        
-    indice = int(input("Digite o numero da tarefa para atualizar: "))
-    
-    # Verifica se o indicde existe na lista
-    if 0 <= indice < len(self.novas_tarefas):
-      novo_texto = input("Digite a nova tarefa: ")
-      nova_descricao = input("Digite a descrição da tarefa: ")
-      novo_status = input("Digite o novo status da tarefa: ")
-      
-      # Atualiza a lista de atributos do objetos
-      self.novas_tarefas[indice].nome_tarefa = novo_texto
-      self.novas_tarefas[indice].descricao = nova_descricao
-      self.novas_tarefas[indice].status = novo_status
-      print("Tarefa Atualizada!")
-    else:
-      print("Indice invalido!")
-      
-
+          print("\nTarefas atuais:")
+          
+          for i, tarefa in enumerate(self.novas_tarefas):
+            print(
+                f"Tarefa: [{i}] - {tarefa.nome_tarefa} | Descrição: {tarefa.descricao} | Status: {tarefa.status}"
+            )  
+          
+          try:
+            indice = int(input("Digite o numero da tarefa para atualizar: "))
+ 
+          except ValueError:
+            print("Erro: Digite um numero valido")
+            return
+          
+          # Verifica se o indice existe na lista
+          if 0 <= indice < len(self.novas_tarefas):
+                novo_texto = input("Digite a nova tarefa: ")
+                nova_descricao = input("Digite a descrição da tarefa: ")
+                novo_status = input("Digite o novo status da tarefa: ")
+                
+                # Atualiza a lista de atributos do objetos
+                self.novas_tarefas[indice].nome_tarefa = novo_texto
+                self.novas_tarefas[indice].descricao = nova_descricao
+                self.novas_tarefas[indice].status = novo_status
+                print("Tarefa Atualizada!")
+          else:
+            print("Indice invalido!")
+            
+  
   def deletar_tarefa(self): # DELETE
+   
+    if not self.novas_tarefas:
+      print("Nenhuma tarefa disponivel!")
+      return
+    
     print("\nTarefas atuais:")
 
     for i, tarefa in enumerate(self.novas_tarefas):
       print(f"Tarefa: {i}  {tarefa}")
       
-    indice_deletar = int(input("Digite o numero da tarefa para deletar: "))
-      
-      # Validação de indice
+    try:
+      indice_deletar = int(input("Digite o numero da tarefa para deletar: "))
+    except ValueError:
+      print("Erro: Digite um numero valido")
+      return
+    
+    # Validação de indice
     if 0 <= indice_deletar < len(self.novas_tarefas):
       
       # Deletar tarefa
@@ -79,6 +100,5 @@ class Gerenciador_Tarefas():
     else:
         print("Indice invalido!")
 
-    print(f"Lista atualizada: {tarefa}")
 
-gerenciador_tarefas_crud = Gerenciador_Tarefas()
+gerenciador_tarefas_crud = GerenciadorTarefas()
