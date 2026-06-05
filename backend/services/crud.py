@@ -1,10 +1,8 @@
-# Logica principal do negeocio (CRUD)
 from services.tarefa import Tarefa
-
+from repository.Tarefa_Repository import Repository_banco
 class GerenciadorTarefas():
   def __init__(self):
-    self.novas_tarefas = []
-    self.id_tarefa = 1
+    self.repo_banco = Repository_banco() #Injeção de Dependência
     
   def menu_opcoes(self):
     print("------ BEM VINDO AO MENU DE TAREFAS ------")
@@ -14,32 +12,25 @@ class GerenciadorTarefas():
     print("4 - Excluir tarefas")
     print("5 - Sair do menu de tarefas")
 
-  def adicionar_tarefas(self): # CREATE  
-    
+  def adicionar_tarefas(self):  
       nome_tarefa = input("Digite a nova tarefa: ").strip()
       descricao_tarefa = input("Descrição da tarefa: ").strip()
       status_tarefa = input("Status da tarefa: ").strip()
-      
     
-      tarefa = Tarefa(self.id_tarefa,nome_tarefa,
-                      descricao_tarefa,
-                      status_tarefa)
+      tarefa = Tarefa(nome_tarefa,descricao_tarefa,status_tarefa)
       
-      print(f"Tarefa: {tarefa.nome_tarefa} -  adicionada com sucesso!")
-      self.novas_tarefas.append(tarefa)
-      self.id_tarefa += 1
+      print(f"Tarefa: {tarefa.nome_tarefa} - adicionada com sucesso!")
+      self.repo_banco.salvar_tarefa(tarefa)
+
       
       
-  def visualizar_tarefa(self): # READ
-      
-    if not self.novas_tarefas:
-      print("Nenhuma tarefa disponivel !")
-      return
+  def visualizar_tarefa(self):
+    tarefas = self.repo_banco.listar_tarefas()
     
-    for tarefa in self.novas_tarefas:
+    for tarefa in tarefas:
       print(tarefa)
   
-  def atualizar_tarefa(self): # UPTDATE
+  def atualizar_tarefa(self): # UPDATE
           
           if not self.novas_tarefas:
             print("Nenhuma tarefa disponivel!")

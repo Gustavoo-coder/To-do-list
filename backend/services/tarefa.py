@@ -1,7 +1,6 @@
 class Tarefa():
     
-  def __init__(self,id,tarefa,descricao,status):
-    self.id = id
+  def __init__(self,tarefa,descricao,status):
     self.nome_tarefa = tarefa
     self.descricao = descricao
     self.status = status
@@ -13,5 +12,4 @@ class Tarefa():
       raise ValueError("Deve ter pelo 5 caracteres !")
     
   def __str__(self):
-      return f"[{self.id}]  {self.nome_tarefa} | Descrição: {self.descricao} | Status: {self.status}"
-
+      return f" Tarefa: {self.nome_tarefa} | Descrição: {self.descricao} | Status: {self.status}"
