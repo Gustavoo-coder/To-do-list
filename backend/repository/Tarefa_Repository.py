@@ -1,5 +1,5 @@
-from database.conexão_banco import conecta_banco
-from services.tarefa import Tarefa
+from backend.database.conexão_banco import conecta_banco
+from backend.models.tarefa import Tarefa
 from sqlalchemy import text
 
 class Repository_banco():
@@ -7,9 +7,6 @@ class Repository_banco():
   # construtor recebe a conexão externamente 
   def __init__(self):
     self.engine = conecta_banco()
-    
-  
-  # Metodos CRUD
   
   def salvar_tarefa(self,tarefa : Tarefa) -> None:
     
@@ -23,7 +20,7 @@ class Repository_banco():
                     VALUES(:nome_tarefa, :descricao_tarefa, :status_tarefa)
                     """)
         
-        # 3° acessa os valores da classe tarefa segundo pesquisas (GOOGLE)
+        # 3° acessa os valores da classe tarefa
         conn.execute(query, {
           "nome_tarefa" : tarefa.nome_tarefa,
           "descricao_tarefa" : tarefa.descricao,
@@ -35,7 +32,7 @@ class Repository_banco():
     
     
     except Exception as e:
-      ValueError(f"Erro ao adiconar tarefa {e}")
+      raise ValueError(f"Erro ao adiconar tarefa {e}")
     
   
   def listar_tarefas(self):
@@ -54,16 +51,36 @@ class Repository_banco():
         # 4° Cria uma lista vazia para armazenar todas as tarefas
         tarefas_query = []
         
-        # 5° Itera sobre cada resultado vindo da tupla
-        # 6° Transforma cada indidce da tupla em um objeto da classe tarefa
-        # 7° Adiciona o resultado final na lista tarefas_query
-        # 8° Retorna o resultao
+        # Itera sobre cada resultado vindo da tupla
+        # Transforma cada indidce da tupla em um objeto da classe tarefa
         for tarefa in resultado_query:
-          tarefa = Tarefa(tarefa[1],tarefa[3],tarefa[2])
+          tarefa = Tarefa(tarefa[1],tarefa[3],tarefa[2],tarefa[0])
           tarefas_query.append(tarefa)
-        
-  
+       
         return tarefas_query
     
-    except Exception as e:
-      ValueError(f"Erro ao ler tarefa {e}")
+    except Exception as error:
+      raise ValueError(f"Erro ao ler tarefa: {error}")
+  
+  
+  def update_tarefa_id(self,tarefa:Tarefa,id) -> None:
+    
+    try :
+      with self.engine.connect() as conn:
+      
+      # atualizar a tarefa 
+        query_atualizar = text("""UPDATE tarefa SET nome_tarefa = :nome_tarefa, descricao_tarefa = :descricao_tarefa, status_tarefa = :status_tarefa WHERE id_tarefa = :id_tarefa""")
+      
+        conn.execute(query_atualizar,{
+            "id_tarefa" : id,
+            "nome_tarefa" : tarefa.nome_tarefa,
+            "descricao_tarefa" : tarefa.descricao,
+            "status_tarefa" : tarefa.status
+          })
+
+        # envia alterações pro banco
+        conn.commit()
+        
+        
+    except Exception as error:
+      raise ValueError(f"Erro ao atualizar tarefa: {error}")
