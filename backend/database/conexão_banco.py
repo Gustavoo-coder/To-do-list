@@ -7,9 +7,6 @@ load_dotenv()
 
 def conecta_banco():
   
-  """
-  
-  """
     
   # Faz a montagem da engine
   engine = create_engine(
@@ -24,7 +21,7 @@ def conecta_banco():
   # Teste da montagem da engine e conexão ao banco
   try:
       with engine.connect():
-    
+        print("Conectado com sucesso")
         return engine
   
   except Exception as e:

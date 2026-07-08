@@ -22,8 +22,7 @@ class GerenciadorTarefas():
       self.repo_banco.salvar_tarefa(tarefa)
       print(f"Tarefa: {tarefa.nome_tarefa} - adicionada com sucesso!")
 
-      
-      
+    
   def visualizar_tarefa(self):
     tarefas = self.repo_banco.listar_tarefas()
     
@@ -36,7 +35,7 @@ class GerenciadorTarefas():
           
           print("\nTarefas atuais:")
           
-          for i, tarefa in enumerate(tarefas,start=1):
+          for i, tarefa in enumerate(tarefas):
             print(
                 f"Tarefa: [{i}] - {tarefa.nome_tarefa} | Descrição: {tarefa.descricao} | Status: {tarefa.status}"
             )  
@@ -66,15 +65,14 @@ class GerenciadorTarefas():
   
   def deletar_tarefa(self): # DELETE
    
-    if not self.novas_tarefas:
-      print("Nenhuma tarefa disponivel!")
-      return
-    
     print("\nTarefas atuais:")
 
-    for i, tarefa in enumerate(self.novas_tarefas):
-      print(f"Tarefa: {i}  {tarefa}")
-      
+    resultado_tarefas = self.repo_banco.listar_tarefas()
+    
+    for i, tarefa in enumerate(resultado_tarefas, start=1):
+      print(f"Tarefa: {i}  {tarefa.nome_tarefa}")
+    
+    
     try:
       indice_deletar = int(input("Digite o numero da tarefa para deletar: "))
     except ValueError:
@@ -82,10 +80,11 @@ class GerenciadorTarefas():
       return
     
     # Validação de indice
-    if 0 <= indice_deletar < len(self.novas_tarefas):
+    if 1 <= indice_deletar <= len(resultado_tarefas):
       
       # Deletar tarefa
-        self.novas_tarefas.pop(indice_deletar)
+        tarefa = resultado_tarefas[indice_deletar -1] # aqui
+        self.repo_banco.deletar_tarefa_id(tarefa.id)
         print("Tarefa removida com sucesso!")
     else:
         print("Indice invalido!")
