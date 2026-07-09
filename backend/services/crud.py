@@ -1,10 +1,8 @@
-# Logica principal do negeocio (CRUD)
-from services.tarefa import Tarefa
-
+from backend.models.tarefa import Tarefa
+from backend.repository.Tarefa_Repository import Repository_banco
 class GerenciadorTarefas():
   def __init__(self):
-    self.novas_tarefas = []
-    self.id_tarefa = 1
+    self.repo_banco = Repository_banco() #Injeção de Dependência
     
   def menu_opcoes(self):
     print("------ BEM VINDO AO MENU DE TAREFAS ------")
@@ -14,61 +12,52 @@ class GerenciadorTarefas():
     print("4 - Excluir tarefas")
     print("5 - Sair do menu de tarefas")
 
-  def adicionar_tarefas(self): # CREATE  
-    
+  def adicionar_tarefas(self):  
       nome_tarefa = input("Digite a nova tarefa: ").strip()
       descricao_tarefa = input("Descrição da tarefa: ").strip()
       status_tarefa = input("Status da tarefa: ").strip()
-      
     
-      tarefa = Tarefa(self.id_tarefa,nome_tarefa,
-                      descricao_tarefa,
-                      status_tarefa)
+      tarefa = Tarefa(nome_tarefa,descricao_tarefa,status_tarefa)
       
-      print(f"Tarefa: {tarefa.nome_tarefa} -  adicionada com sucesso!")
-      self.novas_tarefas.append(tarefa)
-      self.id_tarefa += 1
-      
-      
-  def visualizar_tarefa(self): # READ
-      
-    if not self.novas_tarefas:
-      print("Nenhuma tarefa disponivel !")
-      return
+      self.repo_banco.salvar_tarefa(tarefa)
+      print(f"Tarefa: {tarefa.nome_tarefa} - adicionada com sucesso!")
+
     
-    for tarefa in self.novas_tarefas:
+  def visualizar_tarefa(self):
+    tarefas = self.repo_banco.listar_tarefas()
+    
+    for tarefa in tarefas:
       print(tarefa)
   
-  def atualizar_tarefa(self): # UPTDATE
+  def atualizar_tarefa(self): # UPDATE
           
-          if not self.novas_tarefas:
-            print("Nenhuma tarefa disponivel!")
-            return
-
+          tarefas = self.repo_banco.listar_tarefas()
+          
           print("\nTarefas atuais:")
           
-          for i, tarefa in enumerate(self.novas_tarefas):
+          for i, tarefa in enumerate(tarefas):
             print(
                 f"Tarefa: [{i}] - {tarefa.nome_tarefa} | Descrição: {tarefa.descricao} | Status: {tarefa.status}"
             )  
           
           try:
-            indice = int(input("Digite o numero da tarefa para atualizar: "))
+            indice_tarefa = int(input("Digite o numero da tarefa para atualizar: "))
  
           except ValueError:
-            print("Erro: Digite um numero valido")
+            print("Digite um identificador unico")
             return
           
-          # Verifica se o indice existe na lista
-          if 0 <= indice < len(self.novas_tarefas):
+          # Verifica se o indice_tarefa existe na lista
+          if 0 <= indice_tarefa < len(tarefas):
                 novo_texto = input("Digite a nova tarefa: ")
                 nova_descricao = input("Digite a descrição da tarefa: ")
                 novo_status = input("Digite o novo status da tarefa: ")
                 
-                # Atualiza a lista de atributos do objetos
-                self.novas_tarefas[indice].nome_tarefa = novo_texto
-                self.novas_tarefas[indice].descricao = nova_descricao
-                self.novas_tarefas[indice].status = novo_status
+                # compactando obejetos soltos na class tarefa
+                tarefa_nova = Tarefa(novo_texto,nova_descricao,novo_status)
+                
+                # atualiza a tarefa chamando repository
+                self.repo_banco.update_tarefa_id(tarefa_nova,tarefas[indice_tarefa].id)
                 print("Tarefa Atualizada!")
           else:
             print("Indice invalido!")
@@ -76,15 +65,14 @@ class GerenciadorTarefas():
   
   def deletar_tarefa(self): # DELETE
    
-    if not self.novas_tarefas:
-      print("Nenhuma tarefa disponivel!")
-      return
-    
     print("\nTarefas atuais:")
 
-    for i, tarefa in enumerate(self.novas_tarefas):
-      print(f"Tarefa: {i}  {tarefa}")
-      
+    resultado_tarefas = self.repo_banco.listar_tarefas()
+    
+    for i, tarefa in enumerate(resultado_tarefas, start=1):
+      print(f"Tarefa: {i}  {tarefa.nome_tarefa}")
+    
+    
     try:
       indice_deletar = int(input("Digite o numero da tarefa para deletar: "))
     except ValueError:
@@ -92,10 +80,11 @@ class GerenciadorTarefas():
       return
     
     # Validação de indice
-    if 0 <= indice_deletar < len(self.novas_tarefas):
+    if 1 <= indice_deletar <= len(resultado_tarefas):
       
       # Deletar tarefa
-        self.novas_tarefas.pop(indice_deletar)
+        tarefa = resultado_tarefas[indice_deletar -1] # aqui
+        self.repo_banco.deletar_tarefa_id(tarefa.id)
         print("Tarefa removida com sucesso!")
     else:
         print("Indice invalido!")

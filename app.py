@@ -1,4 +1,4 @@
-from services.crud import gerenciador_tarefas_crud
+from backend.services.crud import gerenciador_tarefas_crud
 
 # Fluxo crud do to-do-list
 while True:
