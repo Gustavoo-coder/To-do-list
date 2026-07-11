@@ -1,33 +1,32 @@
 from backend.models.tarefa import Tarefa
 from backend.repository.Tarefa_Repository import Repository_banco
+from backend.schemas.tarefaSchema import tarefaSchema
+
 class GerenciadorTarefas():
   def __init__(self):
     self.repo_banco = Repository_banco() #Injeção de Dependência
     
-  def menu_opcoes(self):
-    print("------ BEM VINDO AO MENU DE TAREFAS ------")
-    print("1 - Adicionar tarefas")
-    print("2 - Visualizar a tarefas")
-    print("3 - Atualizar tarefas")
-    print("4 - Excluir tarefas")
-    print("5 - Sair do menu de tarefas")
+  def adicionar_tarefas(self,dados_tarefa: tarefaSchema):
+    try:
+        # recebe o modelo de dados vindo da API e adapta para classe existente do sistema 
+        tarefa = Tarefa(dados_tarefa.nome_tarefa,dados_tarefa.descricao_tarefa, dados_tarefa.status_tarefa)
+        
+        print(tarefa)
+        resultado = self.repo_banco.salvar_tarefa(tarefa) # chama o banco
 
-  def adicionar_tarefas(self):  
-      nome_tarefa = input("Digite a nova tarefa: ").strip()
-      descricao_tarefa = input("Descrição da tarefa: ").strip()
-      status_tarefa = input("Status da tarefa: ").strip()
-    
-      tarefa = Tarefa(nome_tarefa,descricao_tarefa,status_tarefa)
+        return resultado
       
-      self.repo_banco.salvar_tarefa(tarefa)
-      print(f"Tarefa: {tarefa.nome_tarefa} - adicionada com sucesso!")
-
-    
+    except Exception as error:
+      print(f"Erro ao inserir tarefa", error)
+  
+  
+  
   def visualizar_tarefa(self):
-    tarefas = self.repo_banco.listar_tarefas()
     
-    for tarefa in tarefas:
-      print(tarefa)
+    tarefas = self.repo_banco.listar_tarefas()
+    return tarefas 
+  
+  
   
   def atualizar_tarefa(self): # UPDATE
           

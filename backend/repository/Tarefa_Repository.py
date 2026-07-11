@@ -18,18 +18,23 @@ class Repository_banco():
         query = text("""
                     INSERT INTO tarefa (nome_tarefa, descricao_tarefa, status_tarefa)
                     VALUES(:nome_tarefa, :descricao_tarefa, :status_tarefa)
-                    """)
+                    RETURNING id_tarefa, nome_tarefa, descricao_tarefa, status_tarefa""")
         
         # 3° acessa os valores da classe tarefa
-        conn.execute(query, {
+        resultado = conn.execute(query, {
           "nome_tarefa" : tarefa.nome_tarefa,
           "descricao_tarefa" : tarefa.descricao,
           "status_tarefa" : tarefa.status
         })
-
+        
+        # captura a tarefa do usuario criada
+        tarefa_criada = resultado.fetchone()
+        
         # 4° envia pro banco
         conn.commit()
-    
+
+        return dict(tarefa_criada._mapping) # type: ignore
+      
     
     except Exception as e:
       raise ValueError(f"Erro ao adiconar tarefa {e}")
@@ -52,13 +57,11 @@ class Repository_banco():
         tarefas_query = []
         
         # Itera sobre cada resultado vindo da tupla
-        # Transforma cada indidce da tupla em um objeto da classe tarefa
-        for tarefa in resultado_query:
-          tarefa = Tarefa(tarefa[1],tarefa[3],tarefa[2],tarefa[0])
-          tarefas_query.append(tarefa)
+        for row in resultado_query:
+          tarefas_query.append(dict(row._mapping)) # type: ignore
        
-        return tarefas_query
-    
+        return tarefas_query 
+      
     except Exception as error:
       raise ValueError(f"Erro ao ler tarefa: {error}")
   
