@@ -23,8 +23,8 @@ class Repository_banco():
         # 3° acessa os valores da classe tarefa
         resultado = conn.execute(query, {
           "nome_tarefa" : tarefa.nome_tarefa,
-          "descricao_tarefa" : tarefa.descricao,
-          "status_tarefa" : tarefa.status
+          "descricao_tarefa" : tarefa.descricao_tarefa,
+          "status_tarefa" : tarefa.status_tarefa
         })
         
         # captura a tarefa do usuario criada
@@ -66,24 +66,50 @@ class Repository_banco():
       raise ValueError(f"Erro ao ler tarefa: {error}")
   
   
+  
+  def listar_tarefa_id(self,id_tarefa):
+    try:
+      # 1° abre a conexão com o banco
+       with self.engine.connect() as conn: # type: ignore
+        
+        # 2° escreve a query 
+        query_listar_id = text("""SELECT * FROM tarefa WHERE id_tarefa = :id_tarefa""")
+        
+        # 3° executa a query passando o id
+        resultado_filtro = conn.execute(query_listar_id,{"id_tarefa": id_tarefa}).scalar_one_or_none()
+        
+        
+        return resultado_filtro
+      
+      
+    except Exception as error:
+      raise ValueError(f"Erro[REPOSITORY] ao buscar tarefa: {error}")
+    
+  
+
+  
   def update_tarefa_id(self,tarefa:Tarefa,id):
     
     try :
       with self.engine.connect() as conn: # type: ignore
       
       # atualizar a tarefa 
-        query_atualizar = text("""UPDATE tarefa SET nome_tarefa = :nome_tarefa, descricao_tarefa = :descricao_tarefa, status_tarefa = :status_tarefa WHERE id_tarefa = :id_tarefa""")
+        query_atualizar = text("""UPDATE tarefa SET nome_tarefa = :nome_tarefa, descricao_tarefa = :descricao_tarefa, status_tarefa = :status_tarefa WHERE id_tarefa = :id_tarefa
+        RETURNING id_tarefa, nome_tarefa, descricao_tarefa, status_tarefa""")
       
-        conn.execute(query_atualizar,{
+        resultado = conn.execute(query_atualizar,{
             "id_tarefa" : id,
             "nome_tarefa" : tarefa.nome_tarefa,
-            "descricao_tarefa" : tarefa.descricao,
-            "status_tarefa" : tarefa.status
+            "descricao_tarefa" : tarefa.descricao_tarefa,
+            "status_tarefa" : tarefa.status_tarefa
           })
 
+        nova_tarefa = resultado.fetchone()
+        
         # envia alterações pro banco
         conn.commit()
-        
+      
+        return dict(nova_tarefa._mapping) # type: ignore
         
     except Exception as error:
       raise ValueError(f"Erro ao atualizar tarefa: {error}")

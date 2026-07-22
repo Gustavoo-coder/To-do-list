@@ -11,14 +11,12 @@ class GerenciadorTarefas():
         # recebe o modelo de dados vindo da API e adapta para classe existente do sistema 
         tarefa = Tarefa(dados_tarefa.nome_tarefa,dados_tarefa.descricao_tarefa, dados_tarefa.status_tarefa)
         
-        print(tarefa)
         resultado = self.repo_banco.salvar_tarefa(tarefa) # chama o banco
 
         return resultado
-      
+    
     except Exception as error:
       print(f"Erro ao inserir tarefa", error)
-  
   
   
   def visualizar_tarefa(self):
@@ -28,38 +26,17 @@ class GerenciadorTarefas():
   
   
   
-  def atualizar_tarefa(self): # UPDATE
+  def atualizar_tarefa(self,id, nova_tarefa:Tarefa): # UPDATE
+        
+          # Verifca se a tarefa existe
+          self.repo_banco.listar_tarefa_id(id)
           
-          tarefas = self.repo_banco.listar_tarefas()
+          if self.repo_banco: # se existe a tarefa, passo pro repository
+            return self.repo_banco.update_tarefa_id(nova_tarefa,id)
           
-          print("\nTarefas atuais:")
-          
-          for i, tarefa in enumerate(tarefas):
-            print(
-                f"Tarefa: [{i}] - {tarefa.nome_tarefa} | Descrição: {tarefa.descricao} | Status: {tarefa.status}"
-            )  
-          
-          try:
-            indice_tarefa = int(input("Digite o numero da tarefa para atualizar: "))
- 
-          except ValueError:
-            print("Digite um identificador unico")
-            return
-          
-          # Verifica se o indice_tarefa existe na lista
-          if 0 <= indice_tarefa < len(tarefas):
-                novo_texto = input("Digite a nova tarefa: ")
-                nova_descricao = input("Digite a descrição da tarefa: ")
-                novo_status = input("Digite o novo status da tarefa: ")
-                
-                # compactando obejetos soltos na class tarefa
-                tarefa_nova = Tarefa(novo_texto,nova_descricao,novo_status)
-                
-                # atualiza a tarefa chamando repository
-                self.repo_banco.update_tarefa_id(tarefa_nova,tarefas[indice_tarefa].id)
-                print("Tarefa Atualizada!")
           else:
-            print("Indice invalido!")
+            raise ValueError("Tarefa não encontrada!")
+          
             
   
   def deletar_tarefa(self): # DELETE

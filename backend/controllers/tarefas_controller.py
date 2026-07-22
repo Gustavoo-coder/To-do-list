@@ -6,3 +6,6 @@ def criar_tarefa(body_tarefa: tarefaSchema):
 
 def listar_tarefa():
   return gerenciador_tarefas_crud.visualizar_tarefa()
+
+def atualizar_tarefa_id(id,body_tarefa:tarefaSchema):
+  return gerenciador_tarefas_crud.atualizar_tarefa(id,body_tarefa)
