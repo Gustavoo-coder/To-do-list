@@ -1,5 +1,6 @@
 from backend.database.conexão_banco import conecta_banco
 from backend.models.tarefa import Tarefa
+from backend.schemas.tarefaSchema import tarefaSchema
 from sqlalchemy import text
 
 class Repository_banco():
@@ -77,18 +78,21 @@ class Repository_banco():
         
         # 3° executa a query passando o id
         resultado_filtro = conn.execute(query_listar_id,{"id_tarefa": id_tarefa}).scalar_one_or_none()
+           
+        # valida se existe
+        if  not resultado_filtro:
+          raise ValueError ("Tarefa Nao encontrada ou já excluida")
         
         
-        return resultado_filtro
-      
+        return  resultado_filtro
       
     except Exception as error:
-      raise ValueError(f"Erro[REPOSITORY] ao buscar tarefa: {error}")
+      raise ValueError(error)
     
   
 
   
-  def update_tarefa_id(self,tarefa:Tarefa,id):
+  def update_tarefa_id(self,id, tarefa:tarefaSchema,):
     
     try :
       with self.engine.connect() as conn: # type: ignore
@@ -123,15 +127,16 @@ class Repository_banco():
         query_deletar = text(""" DELETE FROM tarefa WHERE id_tarefa = :id_tarefa """)
         
         # passo os objetos da classe e execeto a query
-        conn.execute(query_deletar,{
+        resultado = conn.execute(query_deletar,{
           "id_tarefa" : id
         })
       
         # envia alterações pro banco
         conn.commit()
         
+        return resultado
     except Exception as error:
-      raise ValueError(f"Erro ao excluir tarefa tarefa: {error}")
+      return (f"Erro ao excluir tarefa tarefa: {error}")
     
     
     
