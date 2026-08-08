@@ -9,4 +9,6 @@ class tarefaSchema(BaseModel):
 class usuarioSchema(BaseModel):
   nome_usuario : str
   email : EmailStr
-  senha_hash : str
+  senha: str
+  
+  

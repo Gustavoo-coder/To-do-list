@@ -1,6 +1,6 @@
 from backend.models.tarefa import Tarefa
 from backend.repository.Tarefa_Repository import Repository_banco
-from backend.schemas.tarefaSchema import tarefaSchema
+from backend.schemas.Schema import tarefaSchema
 
 
 class GerenciadorTarefas_Service():

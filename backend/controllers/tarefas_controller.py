@@ -1,4 +1,4 @@
-from backend.schemas.tarefaSchema import tarefaSchema
+from backend.schemas.Schema import tarefaSchema
 from backend.services.services_tarefa import gerenciador_Tarefas_Service
 
 def controller_criar_tarefa(body_tarefa: tarefaSchema):

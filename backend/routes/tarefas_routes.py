@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from fastapi import HTTPException
-from backend.schemas.tarefaSchema import tarefaSchema
+from backend.schemas.Schema import tarefaSchema
 
 from backend.controllers.tarefas_controller import (
 controller_criar_tarefa,

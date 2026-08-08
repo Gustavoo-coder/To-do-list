@@ -1,12 +1,12 @@
 from backend.database.conexão_banco import conecta_banco
 from backend.models.tarefa import Tarefa
-from backend.schemas.tarefaSchema import tarefaSchema
+from backend.schemas.Schema import tarefaSchema
 from sqlalchemy import text
 
 class Repository_banco():
   
   # construtor recebe a conexão externamente 
-  def __init__(self):
+  def __init__(self) ->None:
     self.engine = conecta_banco()
   
   def salvar_tarefa(self,tarefa : Tarefa):
