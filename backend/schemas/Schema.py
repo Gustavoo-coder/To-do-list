@@ -11,4 +11,9 @@ class usuarioSchema(BaseModel):
   email : EmailStr
   senha: str
   
+class UsuarioAtualizar(BaseModel):
+  nome : str | None = None
+  email : EmailStr | None = None
+  senha_hash: str | None = None
+  
   

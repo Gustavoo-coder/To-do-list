@@ -31,4 +31,36 @@ class User_Repository():
             
             return dict(user_criado._mapping) # type: ignore
       except Exception as error:
-        raise ValueError (f"Erro ao inserir usario {error}")
+        raise ValueError (f"Erro ao inserir usuario {error}")
+      
+      
+  def atualizar_usuario(self,usuario,id):
+    try:
+      colunas = []
+      
+      for chave in usuario.keys():  
+          colunas.append(f"{chave} = :{chave}")
+
+      set_campo = ", ".join(colunas)
+      
+      with self.engine.connect() as conn: # type: ignore
+        
+        query = text(f"""
+                     UPDATE usuario SET {set_campo}
+                     WHERE id_usuario = :id_usuario
+                     RETURNING nome,email,senha_hash""")
+        
+        resultado = conn.execute(query,{
+          "id_usuario" : id,
+          **usuario
+        })
+        
+        novos_dados = resultado.fetchone() 
+        print(novos_dados)
+        
+        conn.commit()
+        
+        return dict(novos_dados._mapping) # type: ignore
+      
+    except Exception as error:
+      raise ValueError(f"Erro ao atualizar dados do usuario {error}")
