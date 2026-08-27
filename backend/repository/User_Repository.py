@@ -1,6 +1,6 @@
 from backend.database.conexão_banco import conecta_banco
 from sqlalchemy import text
-from backend.schemas.Schema import usuarioSchema
+from backend.schemas.Schema import UsuarioLogin
 from backend.models.usuario import Usuario 
 
 class User_Repository():
@@ -64,3 +64,20 @@ class User_Repository():
       
     except Exception as error:
       raise ValueError(f"Erro ao atualizar dados do usuario {error}")
+    
+  def verificar_usuario_email(self,email):
+    try:
+      with self.engine.connect() as conn: #type: ignore
+      
+        query = text("""SELECT nome, email, senha_hash FROM usuario WHERE email = :email
+                     """)
+        
+        user_email = conn.execute(query,{
+          "email" : email}).scalar_one_or_none()
+        
+        
+        
+        return user_email #type: ignore 
+
+    except Exception as error:
+      raise ValueError(f" {error}")

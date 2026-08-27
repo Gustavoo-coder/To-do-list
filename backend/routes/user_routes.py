@@ -1,12 +1,10 @@
-from fastapi import APIRouter
-from fastapi import HTTPException
+from fastapi import APIRouter , HTTPException
 from fastapi.responses import JSONResponse
-from backend.schemas.Schema import usuarioSchema
-from backend.schemas.Schema import UsuarioAtualizar
-from backend.controllers.user_controller import criar_user, alterar_dados_user, deletar_user
+from backend.schemas.Schema import usuarioSchema , UsuarioAtualizar , UsuarioLogin
+from backend.controllers.user_controller import criar_user, alterar_dados_user, deletar_user,user_login
 
 router_user = APIRouter(
-  tags=["Rotas Usuario"]
+  tags=["Rotas - usuario"]
 )
 
 @router_user.post("/usuarios")
@@ -23,8 +21,18 @@ def cadastrar_usuario(body_usuario:usuarioSchema):
   
   
 # Login JWT 
+@router_user.post("/login-usuarios")
+def login_user(body_usuario: UsuarioLogin):
+  try:
+    usuario = user_login(body_usuario)
+    
+    return JSONResponse(status_code=200, content={
+      "Mensagem" : "Login realizado com sucesso!",
+      "Usuario" : usuario})
 
-# ----------------
+  except Exception as error:
+    raise HTTPException(status_code=404, detail= str(error))
+
 
 
 @router_user.patch("/usuarios/{id}")

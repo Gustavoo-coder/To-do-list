@@ -17,3 +17,6 @@ class UsuarioAtualizar(BaseModel):
   senha_hash: str | None = None
   
   
+class UsuarioLogin(BaseModel):
+  email: EmailStr
+  senha : str
