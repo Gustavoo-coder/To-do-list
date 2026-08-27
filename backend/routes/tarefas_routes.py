@@ -12,7 +12,7 @@ controller_deletar_tarefa
 
 # instanciando API ROUTER
 router_tarefas = APIRouter(
-  tags=["Rota Tarefas"]
+  tags=["Rotas - tarefas"]
 )
 
 @router_tarefas.post("/tarefas")
