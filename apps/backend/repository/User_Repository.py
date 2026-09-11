@@ -80,3 +80,33 @@ class User_Repository():
 
     except Exception as error:
       raise ValueError(f" {error}")
+    
+  def buscar_user(self,id):
+        try:
+          with self.engine.connect() as conn: #type: ignore
+          
+            query = text (""" SELECT * FROM usuario WHERE id_usuario = :id_usuario""")
+
+            resultado = conn.execute(query, {
+              "id_usuario" : id
+            }).fetchone()
+
+            return dict(resultado._mapping) #type: ignore 
+        except Exception as error:
+          raise ValueError(f" {error}")
+  
+  def deletar_user(self,id):
+    try:
+        with self.engine.connect() as conn: #type: ignore
+              
+          query = text (""" DELETE  FROM usuario WHERE id_usuario = :id_usuario""")
+    
+          resultado = conn.execute(query, {
+          "id_usuario" : id
+          })
+          
+          conn.commit()
+      
+          return resultado 
+    except Exception as error:
+        raise ValueError(f" {error}")

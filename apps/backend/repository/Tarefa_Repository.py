@@ -17,15 +17,16 @@ class Repository_banco():
         
         #2°escreve a query
         query = text("""
-                    INSERT INTO tarefa (nome_tarefa, descricao_tarefa, status_tarefa)
-                    VALUES(:nome_tarefa, :descricao_tarefa, :status_tarefa)
-                    RETURNING id_tarefa, nome_tarefa, descricao_tarefa, status_tarefa""")
+                    INSERT INTO tarefa (nome_tarefa, descricao_tarefa, status_tarefa, id_usuario)
+                    VALUES(:nome_tarefa, :descricao_tarefa, :status_tarefa, :id_usuario)
+                    RETURNING id_tarefa, nome_tarefa, descricao_tarefa, status_tarefa, id_usuario""")
         
         # 3° acessa os valores da classe tarefa
         resultado = conn.execute(query, {
           "nome_tarefa" : tarefa.nome_tarefa,
           "descricao_tarefa" : tarefa.descricao_tarefa,
-          "status_tarefa" : tarefa.status_tarefa
+          "status_tarefa" : tarefa.status_tarefa,
+          "id_usuario" : tarefa.id_usuario
         })
         
         # captura a tarefa do usuario criada
@@ -41,7 +42,7 @@ class Repository_banco():
       raise ValueError(f"Erro ao adiconar tarefa {e}")
     
   
-  def listar_tarefas(self):
+  def listar_tarefas(self,id):
     
     try:
         
@@ -49,10 +50,10 @@ class Repository_banco():
        with self.engine.connect() as conn: # type: ignore
         
         # 2° escreve a query 
-        query_listar = text("""SELECT * FROM tarefa""")
+        query_listar = text("""SELECT * FROM tarefa WHERE id_usuario = :id_usuario""")
         
         # 3° executa a query para encontar todos os resultados juntamente com fetchall
-        resultado_query = conn.execute(query_listar).fetchall()
+        resultado_query = conn.execute(query_listar,{"id_usuario": id}).fetchall()
         
         # 4° Cria uma lista vazia para armazenar todas as tarefas
         tarefas_query = []
@@ -77,14 +78,15 @@ class Repository_banco():
         query_listar_id = text("""SELECT * FROM tarefa WHERE id_tarefa = :id_tarefa""")
         
         # 3° executa a query passando o id
-        resultado_filtro = conn.execute(query_listar_id,{"id_tarefa": id_tarefa}).scalar_one_or_none()
+        resultado_filtro = conn.execute(query_listar_id,{"id_tarefa": id_tarefa}).fetchone()
            
         # valida se existe
         if  not resultado_filtro:
           raise ValueError ("Tarefa Nao encontrada ou já excluida")
         
+        print(f"BANCO: ${resultado_filtro}" )
         
-        return  resultado_filtro
+        return  dict(resultado_filtro._mapping) # type: ignore
       
     except Exception as error:
       raise ValueError(error)
@@ -137,6 +139,4 @@ class Repository_banco():
         return resultado
     except Exception as error:
       return (f"Erro ao excluir tarefa tarefa: {error}")
-    
-    
     

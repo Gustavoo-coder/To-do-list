@@ -1,7 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import JSONResponse
-from fastapi import HTTPException
 from apps.backend.schemas.Schema import tarefaSchema
+from apps.backend.utils.utils import validar_token
 
 from apps.backend.controllers.tarefas_controller import (
 controller_criar_tarefa,
@@ -16,9 +16,9 @@ router_tarefas = APIRouter(
 )
 
 @router_tarefas.post("/tarefas")
-def criar_tarefas(body_tarefa: tarefaSchema): # chama o endpoint
+def criar_tarefas(body_tarefa: tarefaSchema,id_user: int = Depends(validar_token)): # chama o endpoint
   try:
-    tarefa_criada= controller_criar_tarefa(body_tarefa) # chama  controller
+    tarefa_criada= controller_criar_tarefa(body_tarefa,id_user) # chama  controller
 
       #  Resposta da rota
     return JSONResponse(status_code= 201, content={
@@ -31,8 +31,8 @@ def criar_tarefas(body_tarefa: tarefaSchema): # chama o endpoint
 
 
 @router_tarefas.get("/tarefas")
-def listar_tarefas():
-  lista_tarefa =  controller_listar_tarefa()
+def listar_tarefas(id_usuario: int = Depends(validar_token)):
+  lista_tarefa =  controller_listar_tarefa(id_usuario)
   
   return JSONResponse(status_code=200, content={
     "Mensagem" : "Tarefas listadas com Sucesso!",
@@ -42,24 +42,24 @@ def listar_tarefas():
   
   
 @router_tarefas.put("/tarefas/{id}")
-def atualizar_tarefas(id,body_tarefa:tarefaSchema):
+def atualizar_tarefas(id,body_tarefa:tarefaSchema, id_user = Depends(validar_token)):
   try:
-    nova_tarefaController = controller_atualizar_tarefa_id(id,body_tarefa)
+    nova_tarefaController = controller_atualizar_tarefa_id(id,body_tarefa, id_user)
     return JSONResponse(status_code=200, content={
       "Mensagem" : "Tarefa atualizada com sucesso!",
       "Tarefa" : nova_tarefaController
     })
   except Exception as erro_id:
-    raise HTTPException(status_code=404,detail=str(erro_id))
+    raise HTTPException(status_code=403,detail=str(erro_id))
 
   
 
 @router_tarefas.delete("/tarefas/{id}")
-def deletar_tarefas(id):
+def deletar_tarefas(id,id_user: int = Depends(validar_token)):
   try:
-      controller_deletar_tarefa(id)
+      controller_deletar_tarefa(id, id_user)
 
       return JSONResponse(status_code=200, content={
         "Mensagem" : "Tarefa deletada com sucesso"})
   except Exception as erro:
-    raise HTTPException(status_code= 404,detail=str(erro))
+    raise HTTPException(status_code= 403,detail=str(erro))

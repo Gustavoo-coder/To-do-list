@@ -47,14 +47,15 @@ class Gerenciador_User_Service():
     if not senha_user:
       raise ValueError("E-mail ou Senha invalidos ")
    
-  
     # gera JWT
     token =  gerar_token(usuario_existe["id_usuario"])
     
     return token
   
   def service_delete_user(self, id):
-    ...
+    id_deletado = self.banco_user.deletar_user(id)
+    
+    return id_deletado
     
 gerenciador_user = Gerenciador_User_Service()
 

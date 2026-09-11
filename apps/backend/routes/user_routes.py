@@ -1,7 +1,8 @@
-from fastapi import APIRouter , HTTPException
+from fastapi import APIRouter , HTTPException, Depends
 from fastapi.responses import JSONResponse
 from apps.backend.schemas.Schema import usuarioSchema , UsuarioAtualizar , UsuarioLogin, Token
 from apps.backend.controllers.user_controller import criar_user, alterar_dados_user, deletar_user,user_login
+from apps.backend.utils.utils import validar_token
 
 router_user = APIRouter(
   tags=["Rotas - usuario"]
@@ -36,10 +37,10 @@ def login_user(body_usuario: UsuarioLogin):
 
 
 
-@router_user.patch("/usuarios/{id}")
-def alterar_dado(body_usuario : UsuarioAtualizar, id):
+@router_user.patch("/usuarios")
+def alterar_dado(body_usuario : UsuarioAtualizar , id_user: int = Depends(validar_token)):
   try:
-    dados_usuario = alterar_dados_user(body_usuario, id)
+    dados_usuario = alterar_dados_user(body_usuario, id_user)
     
     return JSONResponse(status_code=200, content = 
     {"Mensagem" : "Dados alterados com sucesso" , 
@@ -50,8 +51,8 @@ def alterar_dado(body_usuario : UsuarioAtualizar, id):
   
   
   
-@router_user.delete("/usuarios{id}")
-def deletar_usuario(id):
+@router_user.delete("/usuarios")
+def deletar_usuario(id = Depends(validar_token)):
   try:
     deletar_user(id)
     
