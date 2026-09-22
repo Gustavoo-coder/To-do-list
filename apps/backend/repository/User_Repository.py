@@ -1,6 +1,5 @@
 from apps.backend.database.conexão_banco import conecta_banco
 from sqlalchemy import text
-from apps.backend.schemas.Schema import UsuarioLogin
 from apps.backend.models.usuario import Usuario 
 
 class User_Repository():
@@ -56,7 +55,7 @@ class User_Repository():
         })
         
         novos_dados = resultado.fetchone() 
-        print(novos_dados)
+        
         
         conn.commit()
         

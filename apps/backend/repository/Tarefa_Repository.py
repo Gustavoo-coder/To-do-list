@@ -84,7 +84,7 @@ class Repository_banco():
         if  not resultado_filtro:
           raise ValueError ("Tarefa Nao encontrada ou já excluida")
         
-        print(f"BANCO: ${resultado_filtro}" )
+       
         
         return  dict(resultado_filtro._mapping) # type: ignore
       

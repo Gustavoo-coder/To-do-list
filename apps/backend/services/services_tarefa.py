@@ -9,7 +9,7 @@ class GerenciadorTarefas_Service():
     
   def adicionar_tarefas(self,dados_tarefa: tarefaSchema,id_user):
     
-        print(f"SERVICE{id_user}")
+        
         # recebe o modelo de dados vindo da API e adapta para classe existente do sistema 
         tarefa = Tarefa(dados_tarefa.nome_tarefa,dados_tarefa.descricao_tarefa, dados_tarefa.status_tarefa,id_user)
         
@@ -30,7 +30,7 @@ class GerenciadorTarefas_Service():
           # Verifca se a tarefa existe
           tarefa_exis= self.repo_banco.listar_tarefa_id(id)
 
-          print(tarefa_exis)
+          
           
           if not tarefa_exis: # verifca se existe a tarefa
            raise ValueError("Tarefa não encontrada!")

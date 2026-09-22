@@ -51,7 +51,7 @@ def validar_token(token: str = Depends(decodificar_token)):
     
     # caso o usuario não exista no banco 
     user_existe = repo_user.buscar_user(id_payload)
-    print(user_existe)
+    
     if not user_existe:
       raise  HTTPException(status_code=401, detail="Token invalido")
     
