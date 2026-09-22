@@ -5,9 +5,10 @@ import os
 # carrega o .env
 load_dotenv()
 
+
 def conecta_banco():
   
-    
+
   # Faz a montagem da engine
   engine = create_engine(
     f"postgresql+psycopg2://{os.getenv('DB_USER')}:"
