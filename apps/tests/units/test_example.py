@@ -23,7 +23,7 @@ def test_error_pytest(): # mais viavél
 
 def test_saudadcao(mocker):
   # passo o a função que vai ser mockada para uso de teste retornar um valor
-  mocker.patch("tests.soma.pegar_nome" , return_value = "Gustavo")
+  mocker.patch("apps.tests.exemplos.pegar_nome" , return_value = "Gustavo")
   
   
   saudacao()
