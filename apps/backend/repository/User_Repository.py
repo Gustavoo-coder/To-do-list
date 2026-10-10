@@ -74,8 +74,12 @@ class User_Repository():
         user_email = conn.execute(query,{
           "email" : email}).fetchone()
         
-  
-        return dict(user_email._mapping) #type: ignore 
+        
+        if not user_email:
+          return None
+          
+        else:
+          return dict(user_email._mapping) #type: ignore 
 
     except Exception as error:
       raise ValueError(f" {error}")

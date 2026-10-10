@@ -3,22 +3,29 @@ from apps.backend.schemas.Schema import usuarioSchema,UsuarioLogin , UsuarioAtua
 from apps.backend.utils.utils import transforma_senha_hash,verificar_senha,gerar_token
 from apps.backend.repository.User_Repository import User_Repository
 
+
 class Gerenciador_User_Service():
   def __init__(self) -> None:
     self.banco_user = User_Repository() #injeção de depêndencia
     
   def service_criar_user(self,body_user:usuarioSchema):
-     
-      senha_has = transforma_senha_hash(body_user.senha)
-     
-     # recebe o modelo de dados vindo da API e adapta para classe existente do sistema 
-      user = Usuario(body_user.nome_usuario, body_user.email, senha_has)
-      
-      
-      resultado_user = self.banco_user.criar_usuario(user)
-      
-      return resultado_user
+         
+    user_existe = self.banco_user.verificar_usuario_email(body_user.email)
     
+    if user_existe:
+      raise ValueError("Este e-mail já está cadastrado. Tente fazer login")
+              
+    elif not user_existe :
+      senha_has = transforma_senha_hash(body_user.senha)
+
+      # recebe o modelo de dados vindo da API e adapta para classe existente do sistema 
+      user = Usuario(body_user.nome_usuario, body_user.email, senha_has)
+
+      resultado_user = self.banco_user.criar_usuario(user)
+    
+
+      return resultado_user
+        
    
   def service_alterar_user(self, body_usuario: UsuarioAtualizar, id):
     novos_dados_user = body_usuario.model_dump(exclude_unset=True) # Pega só o que foi enviado

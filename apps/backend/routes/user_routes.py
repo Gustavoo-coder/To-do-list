@@ -14,11 +14,15 @@ def cadastrar_usuario(body_usuario:usuarioSchema):
     
     criar_user(body_usuario)
     
-    return JSONResponse(status_code=201, content={
-      "Mensagem" : "Usuario criado com sucesso!"})
+    return JSONResponse(status_code=201, content= "Usuario criado com sucesso ")
     
+  
+  except HTTPException as erro:
+    raise HTTPException(status_code=409, detail= str(erro))
+  
+  
   except Exception as erro: 
-    raise HTTPException(status_code=400, detail= str(erro))
+    raise HTTPException(status_code=500, detail= str(erro))
   
   
 

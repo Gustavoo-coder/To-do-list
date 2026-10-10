@@ -2,7 +2,7 @@ from apps.backend.schemas.Schema import usuarioSchema , UsuarioAtualizar, Usuari
 from apps.backend.services.services_users import gerenciador_user
 
 def criar_user(body_usuario:usuarioSchema):
-  return  gerenciador_user.service_criar_user(body_usuario)
+  return gerenciador_user.service_criar_user(body_usuario)
 
 def alterar_dados_user(body_usuario : UsuarioAtualizar,id):
   return gerenciador_user.service_alterar_user(body_usuario,id)
