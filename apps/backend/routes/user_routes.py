@@ -31,13 +31,11 @@ def login_user(body_usuario: UsuarioLogin):
   try:
     usuario = user_login(body_usuario)
     
-    if not usuario: 
-      return JSONResponse(status_code=401, content={"Mensagem" : "E-mail ou Senha invalidos"})
-    
+  
     return {"access_token" : usuario, "token_type": "Bearer"}
 
   except Exception as error:
-    raise HTTPException(status_code=404, detail= str(error))
+    raise HTTPException(status_code=401, detail= str(error))
 
 
 
