@@ -13,7 +13,7 @@ class GerenciadorTarefas_Service():
         # recebe o modelo de dados vindo da API e adapta para classe existente do sistema 
         tarefa = Tarefa(dados_tarefa.nome_tarefa,dados_tarefa.descricao_tarefa, dados_tarefa.status_tarefa,id_user)
         
-        resultado = self.repo_banco.salvar_tarefa(tarefa) # chama o banco
+        resultado = self.repo_banco.salvar_tarefa(tarefa) 
 
         return resultado
     
@@ -27,12 +27,9 @@ class GerenciadorTarefas_Service():
   
   def atualizar_tarefa(self,id, nova_tarefa:tarefaSchema, id_user):
         
-          # Verifca se a tarefa existe
           tarefa_exis= self.repo_banco.listar_tarefa_id(id)
 
-          
-          
-          if not tarefa_exis: # verifca se existe a tarefa
+          if not tarefa_exis: 
            raise ValueError("Tarefa não encontrada!")
           
           if tarefa_exis["id_usuario"] != id_user :
@@ -46,10 +43,8 @@ class GerenciadorTarefas_Service():
   
   def deletar_tarefa(self,id, id_user): 
 
-        # verifica se a tarefa existe
         tarefa_existe = self.repo_banco.listar_tarefa_id(id)
       
-        
         if not tarefa_existe:
           raise ValueError("Tarefa não encontrada ou já excluida")
         
@@ -57,7 +52,6 @@ class GerenciadorTarefas_Service():
           raise ValueError("Você só pode deletar tarefas criadas por você")
         
         else:        
-          # passa pro banco
           resultado = self.repo_banco.deletar_tarefa_id(id)
 
         return resultado

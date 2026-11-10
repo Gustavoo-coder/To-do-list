@@ -30,7 +30,6 @@ class Gerenciador_User_Service():
   def service_alterar_user(self, body_usuario: UsuarioAtualizar, id):
     novos_dados_user = body_usuario.model_dump(exclude_unset=True) # Pega só o que foi enviado
     
-    #passa pro banco
     resultado_user = self.banco_user.atualizar_usuario(novos_dados_user,id)
     
         
@@ -40,21 +39,21 @@ class Gerenciador_User_Service():
   
   def service_autenticar_user(self,body_usuario:UsuarioLogin ):
     
-    # busca pelo banco o email enviado do login
+    
     usuario_existe = self.banco_user.verificar_usuario_email(body_usuario.email)
     
-    # usuario não existe
+    
     if not usuario_existe:
       raise ValueError("E-mail ou Senha invalidos ")
 
-    # verifica se a senha é a mesma
+    
     senha_user = verificar_senha(body_usuario.senha, usuario_existe["senha_hash"])
     
-    # senha invalida 
+    
     if not senha_user:
       raise ValueError("E-mail ou Senha invalidos ")
    
-    # gera JWT
+    
     token =  gerar_token(usuario_existe["id_usuario"])
     
     return token
